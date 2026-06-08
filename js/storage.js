@@ -40,5 +40,24 @@ const Storage = {
     if (score > this.getHighScore()) {
       localStorage.setItem(this.KEY_HIGHSCORE, String(score));
     }
+  },
+
+  getThemeBestScore(themeKey) {
+    try {
+      const data = JSON.parse(localStorage.getItem('ct_theme_scores') || '{}');
+      return parseInt(data[themeKey] || '0', 10);
+    } catch {
+      return 0;
+    }
+  },
+
+  setThemeBestScore(themeKey, score) {
+    try {
+      const data = JSON.parse(localStorage.getItem('ct_theme_scores') || '{}');
+      if (score > (data[themeKey] || 0)) {
+        data[themeKey] = score;
+        localStorage.setItem('ct_theme_scores', JSON.stringify(data));
+      }
+    } catch {}
   }
 };

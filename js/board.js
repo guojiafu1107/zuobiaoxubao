@@ -3,7 +3,7 @@ const Board = {
   currentCols: 5,
   cells: [],
 
-  render(rows, cols, theme) {
+  render(rows, cols, theme, reversedCols = false, reversedRows = false) {
     this.currentRows = rows;
     this.currentCols = cols;
 
@@ -24,21 +24,23 @@ const Board = {
     const spacer = document.createElement('div');
     colLabels.appendChild(spacer);
 
-    // 列标签
+    // 列标签（支持反向）
     for (let c = 0; c < cols; c++) {
       const label = document.createElement('div');
       label.className = 'col-label';
-      label.textContent = theme.colLabel(c);
+      const displayCol = reversedCols ? cols - 1 - c : c;
+      label.textContent = theme.colLabel(displayCol);
       label.dataset.col = c;
       colLabels.appendChild(label);
     }
 
-    // 行标签和格子
+    // 行标签和格子（支持反向）
     this.cells = [];
     for (let r = 0; r < rows; r++) {
       const rowLabel = document.createElement('div');
       rowLabel.className = 'row-label';
-      rowLabel.textContent = theme.rowLabel(r);
+      const displayRow = reversedRows ? rows - 1 - r : r;
+      rowLabel.textContent = theme.rowLabel(displayRow);
       rowLabel.dataset.row = r;
       rowLabels.appendChild(rowLabel);
 
@@ -49,7 +51,9 @@ const Board = {
         cell.dataset.row = r;
         cell.dataset.col = c;
         cell.setAttribute('role', 'gridcell');
-        cell.setAttribute('aria-label', `${theme.rowLabel(r)} ${theme.colLabel(c)}`);
+        const actualRow = reversedRows ? rows - 1 - r : r;
+        const actualCol = reversedCols ? cols - 1 - c : c;
+        cell.setAttribute('aria-label', `${theme.rowLabel(actualRow)} ${theme.colLabel(actualCol)}`);
         cell.addEventListener('click', () => Game.handleCellClick(r, c));
         cell.addEventListener('mouseenter', () => this.highlightCross(r, c));
         cell.addEventListener('mouseleave', () => this.clearHighlight());
@@ -96,7 +100,6 @@ const Board = {
       wrongCell.classList.add('wrong');
     }
 
-    // 短暂提示正确位置
     setTimeout(() => {
       this.highlightCross(correctRow, correctCol);
       const target = this.cells[correctRow]?.[correctCol];
@@ -113,10 +116,37 @@ const Board = {
     }, 2200);
   },
 
+  placeDistractors(targetRow, targetCol, count) {
+    let placed = 0;
+    let attempts = 0;
+    while (placed < count && attempts < 100) {
+      attempts++;
+      const r = Math.floor(Math.random() * this.currentRows);
+      const c = Math.floor(Math.random() * this.currentCols);
+      if (r === targetRow && c === targetCol) continue;
+      const cell = this.cells[r][c];
+      if (cell.textContent) continue;
+      const char = DISTRACTORS[Math.floor(Math.random() * DISTRACTORS.length)];
+      cell.textContent = char;
+      cell.dataset.distractor = '1';
+      placed++;
+    }
+  },
+
+  clearDistractors() {
+    this.cells.flat().forEach(cell => {
+      if (cell.dataset.distractor) {
+        cell.textContent = '';
+        delete cell.dataset.distractor;
+      }
+    });
+  },
+
   resetCellStates() {
     this.cells.flat().forEach(cell => {
       cell.className = 'cell';
       cell.textContent = '';
+      delete cell.dataset.distractor;
     });
   }
 };
