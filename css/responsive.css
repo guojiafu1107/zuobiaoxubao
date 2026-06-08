@@ -1,0 +1,51 @@
+/* 小屏幕横屏提示 */
+@media (max-height: 420px) and (orientation: landscape) {
+  #game-screen {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+  }
+
+  #top-bar {
+    width: auto;
+    min-width: 200px;
+    margin-right: 16px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #bottom-bar {
+    width: 100%;
+    justify-content: center;
+    gap: 24px;
+  }
+}
+
+/* 确保触控区域 */
+.cell, .selector-btn, .btn-primary, .btn-secondary {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* 大屏幕优化 */
+@media (min-width: 768px) {
+  :root {
+    --cell-size: clamp(60px, 10vw, 90px);
+    --label-size: clamp(40px, 6vw, 56px);
+  }
+
+  .selector-btn {
+    font-size: 1.1rem;
+    padding: 12px 24px;
+  }
+}
+
+/* 动画减弱 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
