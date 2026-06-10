@@ -11,16 +11,19 @@ const Board = {
     const colLabels = document.getElementById('col-labels');
     const rowLabels = document.getElementById('row-labels');
 
-    grid.style.setProperty('--rows', rows);
-    grid.style.setProperty('--cols', cols);
-    colLabels.style.setProperty('--cols', cols);
-    rowLabels.style.setProperty('--rows', rows);
+    const cellSize = getComputedStyle(document.documentElement).getPropertyValue('--cell-size').trim() || '48px';
+    const labelSize = getComputedStyle(document.documentElement).getPropertyValue('--label-size').trim() || '32px';
+
+    grid.style.gridTemplateColumns = `repeat(${cols}, ${cellSize})`;
+    grid.style.gridTemplateRows = `repeat(${rows}, ${cellSize})`;
+    colLabels.style.gridTemplateColumns = `${labelSize} repeat(${cols}, ${cellSize})`;
+    rowLabels.style.gridTemplateRows = `repeat(${rows}, ${cellSize})`;
 
     grid.innerHTML = '';
     colLabels.innerHTML = '';
     rowLabels.innerHTML = '';
 
-    // 空白占位
+    // 空白占位（与行标签列等宽）
     const spacer = document.createElement('div');
     colLabels.appendChild(spacer);
 

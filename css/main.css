@@ -10,8 +10,8 @@
   --text-light: #7D6B58;
   --white: #FFFFFF;
   --radius: 20px;
-  --cell-size: clamp(48px, 12vw, 80px);
-  --label-size: clamp(32px, 8vw, 48px);
+  --cell-size: clamp(36px, 8vw, 60px);
+  --label-size: clamp(28px, 6vw, 40px);
   --font-family: 'Fredoka', 'Comic Neue', 'Microsoft YaHei', sans-serif;
   --shadow: 0 4px 12px rgba(74, 55, 40, 0.15);
   --shadow-hover: 0 6px 20px rgba(74, 55, 40, 0.2);
